@@ -28,26 +28,26 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.bar1 = new System.Windows.Forms.Panel();
+            this.bar2 = new System.Windows.Forms.Panel();
             this.ball = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
-            // panel1
+            // bar1
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.panel1.Location = new System.Drawing.Point(50, 100);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(20, 120);
-            this.panel1.TabIndex = 0;
+            this.bar1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.bar1.Location = new System.Drawing.Point(50, 100);
+            this.bar1.Name = "bar1";
+            this.bar1.Size = new System.Drawing.Size(20, 120);
+            this.bar1.TabIndex = 0;
             // 
-            // panel2
+            // bar2
             // 
-            this.panel2.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.panel2.Location = new System.Drawing.Point(750, 100);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(20, 120);
-            this.panel2.TabIndex = 1;
+            this.bar2.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.bar2.Location = new System.Drawing.Point(750, 100);
+            this.bar2.Name = "bar2";
+            this.bar2.Size = new System.Drawing.Size(20, 120);
+            this.bar2.TabIndex = 1;
             // 
             // ball
             // 
@@ -63,8 +63,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(804, 312);
             this.Controls.Add(this.ball);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.bar2);
+            this.Controls.Add(this.bar1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Form1";
             this.Text = "Form1";
@@ -76,8 +76,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel bar1;
+        private System.Windows.Forms.Panel bar2;
         private System.Windows.Forms.Panel ball;
     }
 }

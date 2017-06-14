@@ -37,8 +37,8 @@ namespace PingPong
             t = new Timer();
             t.Interval = 20;
             t.Tick += new EventHandler(MoveBall);
-            t.Start();
             initDirection();
+            t.Start();
         }
 
         void initDirection()
@@ -72,7 +72,7 @@ namespace PingPong
         {
             if (fromLeftToRight)
             {
-                if(BallXPosition<730)
+                if(BallXPosition<790)
                 {
                     if (fromUpToDown)
                     {
@@ -103,15 +103,23 @@ namespace PingPong
 
                     }
                 }
-                if(BallXPosition>730 && (Bar2YPosition + 120 > BallYPosition && BallYPosition > Bar2YPosition))
+                if(BallXPosition>730 && (Bar2YPosition + bar2.Height > BallYPosition && BallYPosition > Bar2YPosition))
                 {
                     fromLeftToRight = false;
+                    
+                }
+
+                if(BallXPosition>780)
+                {
+                    t.Stop();
+                    MessageBox.Show("Player 1 wins the set.");
+                    
                 }
                 
             }
             else
             {
-                if (BallXPosition > 70)
+                if (BallXPosition > 4)
                 {
                     if (fromUpToDown)
                     {
@@ -140,9 +148,16 @@ namespace PingPong
                         }
                     }
                 }
-                if (BallXPosition <70 && (Bar1YPosition + 120> BallYPosition && BallYPosition >Bar1YPosition))
+                if (BallXPosition <70 && (Bar1YPosition + bar1.Height> BallYPosition && BallYPosition >Bar1YPosition))
                 {
                     fromLeftToRight = true;
+                    
+                }
+                if (BallXPosition < 10)
+                {
+                    t.Stop();
+                    MessageBox.Show("Player 2 wins the set.");
+                    
                 }
             }
                     
@@ -162,7 +177,7 @@ namespace PingPong
                 if (Bar1YPosition > 4)
                 {
                     Bar1YPosition -= 4;
-                    panel1.Location = new Point(50, Bar1YPosition);
+                    bar1.Location = new Point(50, Bar1YPosition);
                 }
 
             }
@@ -172,7 +187,7 @@ namespace PingPong
                 if (Bar1YPosition < 185)
                 {
                     Bar1YPosition += 4;
-                    panel1.Location = new Point(50, Bar1YPosition);
+                    bar1.Location = new Point(50, Bar1YPosition);
                 }
 
             }
@@ -183,7 +198,7 @@ namespace PingPong
                 if (Bar2YPosition > 4)
                 {
                     Bar2YPosition -= 4;
-                    panel2.Location = new Point(750, Bar2YPosition);
+                    bar2.Location = new Point(750, Bar2YPosition);
                 }
             }
 
@@ -195,7 +210,7 @@ namespace PingPong
                 if (Bar2YPosition < 185)
                 {
                     Bar2YPosition += 4;
-                    panel2.Location = new Point(750, Bar2YPosition);
+                    bar2.Location = new Point(750, Bar2YPosition);
                 }
 
             }
