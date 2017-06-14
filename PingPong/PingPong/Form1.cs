@@ -13,10 +13,12 @@ namespace PingPong
     public partial class Form1 : Form
     {
 
-        public int Bar1YPosition = 100;
-        public int Bar2YPosition = 100;
-        public int BallXPosition = 400;
-        public int BallYPosition = 100;
+        public int Bar1YPosition;
+        public int Bar2YPosition;
+        public int BallXPosition;
+        public int BallYPosition;
+        public int Player1Points;
+        public int Player2Points;
         Boolean fromLeftToRight;
         Boolean fromUpToDown;
         Boolean paused;
@@ -29,6 +31,9 @@ namespace PingPong
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            Bar1YPosition = 100;
+            Bar2YPosition = 100;
+            ShowPoints();
             StartBall();
         }
 
@@ -43,7 +48,10 @@ namespace PingPong
 
         void initDirection()
         {
-            Random rnd = new Random();
+            BallXPosition = 400;
+            BallYPosition = 100;
+
+        Random rnd = new Random();
             int rightLeft = rnd.Next(0, 2);
 
             if (rightLeft == 0)
@@ -103,7 +111,7 @@ namespace PingPong
 
                     }
                 }
-                if(BallXPosition>730 && (Bar2YPosition + bar2.Height > BallYPosition && BallYPosition > Bar2YPosition))
+                if(BallXPosition>730 && (Bar2YPosition + bar2.Height > BallYPosition && BallYPosition > (Bar2YPosition-15)))
                 {
                     fromLeftToRight = false;
                     
@@ -112,7 +120,9 @@ namespace PingPong
                 if(BallXPosition>780)
                 {
                     t.Stop();
-                    MessageBox.Show("Player 1 wins the set.");
+                    Player1Points += 1;
+                    ShowPoints();
+                    StartBall();
                     
                 }
                 
@@ -148,7 +158,7 @@ namespace PingPong
                         }
                     }
                 }
-                if (BallXPosition <70 && (Bar1YPosition + bar1.Height> BallYPosition && BallYPosition >Bar1YPosition))
+                if (BallXPosition <70 && (Bar1YPosition + bar1.Height> BallYPosition && BallYPosition > (Bar1YPosition -15)))
                 {
                     fromLeftToRight = true;
                     
@@ -156,11 +166,17 @@ namespace PingPong
                 if (BallXPosition < 10)
                 {
                     t.Stop();
-                    MessageBox.Show("Player 2 wins the set.");
-                    
+                    Player2Points += 1;
+                    ShowPoints();
+                    StartBall();
                 }
-            }
-                    
+            }                  
+        }
+
+        void ShowPoints()
+        {
+            label1.Text = Player1Points.ToString();
+            label2.Text = Player2Points.ToString();
         }
 
         void StopBall()
@@ -179,8 +195,8 @@ namespace PingPong
                     Bar1YPosition -= 4;
                     bar1.Location = new Point(50, Bar1YPosition);
                 }
-
             }
+
             if (e.KeyValue == 65)
             {
                 // A key pressed
@@ -189,7 +205,6 @@ namespace PingPong
                     Bar1YPosition += 4;
                     bar1.Location = new Point(50, Bar1YPosition);
                 }
-
             }
 
             if (e.KeyValue == 80)
@@ -201,9 +216,7 @@ namespace PingPong
                     bar2.Location = new Point(750, Bar2YPosition);
                 }
             }
-
-
-
+            
             if (e.KeyValue == 76)
             {
                 // L key pressed
@@ -212,7 +225,6 @@ namespace PingPong
                     Bar2YPosition += 4;
                     bar2.Location = new Point(750, Bar2YPosition);
                 }
-
             }
 
             if (e.KeyValue == 27)
@@ -220,8 +232,6 @@ namespace PingPong
                 // ESC key pressed
                 StopBall();
                 Application.Exit();
-
-
             }
 
             if (e.KeyValue == 32)
@@ -235,12 +245,8 @@ namespace PingPong
                 {
                     t.Stop();
                     paused = true;
-                }
-                
-
+                }              
             }
         }
-
-
     }
 }
