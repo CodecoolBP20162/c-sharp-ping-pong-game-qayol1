@@ -6,16 +6,9 @@ namespace PingPong
 {
     public partial class Form1 : Form
     {
-
-        public int Bar1YPosition;
-        public int Bar2YPosition;
         public int Bar1Speed;
         public int Bar2Speed;
-        public int Bar1Height;
-        public int Bar2Height;
-
-        public int BallXPosition;
-        public int BallYPosition;
+     
         public int BallXSpeed;
         public int BallYSpeed;
 
@@ -27,6 +20,7 @@ namespace PingPong
         Boolean fromLeftToRight;
         Boolean fromUpToDown;
         Boolean paused;
+
         Timer t;
 
         public Form1()
@@ -35,42 +29,44 @@ namespace PingPong
         }
 
         private void Form1_Load(object sender, EventArgs e)
-        {
-            SetPlay();
-            ShowPoints();
-            StartBall();
+        {   
+            StartGame();
         }
 
         private void SetPlay()
         {
-            Bar1YPosition = 100;
-            Bar2YPosition = 100;
-            Bar1Height = 120;
-            Bar2Height = 120;
-            Bar1Speed = 4;
-            Bar2Speed = 4;
+            bar1.Location = new Point(50, 100);
+            bar2.Location = new Point(750, 100);
+            bar1.Height = 120;
+            bar2.Height = 120;
+            Bar1Speed = 8;
+            Bar2Speed = 8;
             BallXSpeed = 4;
             BallYSpeed = 4;
-    }
-
-        private void StartBall()
-        {
-            bar1.Height = Bar1Height;
-            bar2.Height = Bar2Height;
             hits = 0;
+            HitCounterLabel.Text = hits.ToString();
+        }
+
+        private void StartGame()
+        {
+            SetPlay();
+            InitDirection();
+            StartBall();
+        }
+
+        void StartBall()
+        {
             t = new Timer();
-            t.Interval = 20;
+            t.Interval = 16;
             t.Tick += new EventHandler(MoveBall);
-            initDirection();
             t.Start();
         }
 
-        void initDirection()
+        void InitDirection()
         {
-            BallXPosition = 400;
-            BallYPosition = 100;
-
-        Random rnd = new Random();
+            ball.Location = new Point(400, 100);
+            
+            Random rnd = new Random();
             int rightLeft = rnd.Next(0, 2);
 
             if (rightLeft == 0)
@@ -99,29 +95,24 @@ namespace PingPong
         {
             if (fromLeftToRight)
             {
-                if(BallXPosition<790)
+                if (ball.Location.X < 790)
                 {
                     if (fromUpToDown)
                     {
-                        if (BallYPosition < 340)
+                        if (ball.Location.Y < 340)
                         {
-                            BallXPosition += BallXSpeed;
-                            BallYPosition += BallYSpeed;
-                            ball.Location = new Point(BallXPosition, BallYPosition);
+                            ball.Location = new Point(ball.Location.X + BallXSpeed, ball.Location.Y + BallYSpeed);
                         }
                         else
                         {
                             fromUpToDown = false;
                         }
-
                     }
                     else
                     {
-                        if (BallYPosition > 4)
+                        if (ball.Location.Y > 4)
                         {
-                            BallXPosition += BallXSpeed;
-                            BallYPosition -= BallYSpeed;
-                            ball.Location = new Point(BallXPosition, BallYPosition);
+                            ball.Location = new Point(ball.Location.X + BallXSpeed, ball.Location.Y - BallYSpeed);
                         }
                         else
                         {
@@ -130,33 +121,28 @@ namespace PingPong
 
                     }
                 }
-                if(BallXPosition>730 && (Bar2YPosition + bar2.Height > BallYPosition && BallYPosition > (Bar2YPosition-15)))
+                if (ball.Location.X > 730 && (bar2.Location.Y + bar2.Height > ball.Location.Y && ball.Location.Y > (bar2.Location.Y - 15)))
                 {
                     fromLeftToRight = false;
                     HandleHit(bar2);
+                    Shrink(bar2);
                 }
 
-                if(BallXPosition>780)
+                if (ball.Location.X > 780)
                 {
-                    t.Stop();
-                    Player1Points += 1;
-                    ShowPoints();
-                    StartBall();
-                    
+                    HandleScore("Player1");
                 }
-                
+
             }
             else
             {
-                if (BallXPosition > 4)
+                if (ball.Location.X > 4)
                 {
                     if (fromUpToDown)
                     {
-                        if (BallYPosition < 340)
+                        if (ball.Location.Y < 340)
                         {
-                            BallXPosition -= BallXSpeed;
-                            BallYPosition += BallYSpeed;
-                            ball.Location = new Point(BallXPosition, BallYPosition);
+                            ball.Location = new Point(ball.Location.X - BallXSpeed, ball.Location.Y + BallYSpeed);
                         }
                         else
                         {
@@ -165,11 +151,9 @@ namespace PingPong
                     }
                     else
                     {
-                        if (BallYPosition > 4)
+                        if (ball.Location.Y > 4)
                         {
-                            BallXPosition -= BallXSpeed;
-                            BallYPosition -= BallYSpeed;
-                            ball.Location = new Point(BallXPosition, BallYPosition);
+                            ball.Location = new Point(ball.Location.X - BallXSpeed, ball.Location.Y - BallYSpeed);
                         }
                         else
                         {
@@ -177,32 +161,64 @@ namespace PingPong
                         }
                     }
                 }
-                if (BallXPosition <70 && (Bar1YPosition + bar1.Height> BallYPosition && BallYPosition > (Bar1YPosition -15)))
+                if (ball.Location.X < 70 && (bar1.Location.Y + bar1.Height > ball.Location.Y && ball.Location.Y > (bar1.Location.Y - 15)))
                 {
                     fromLeftToRight = true;
                     HandleHit(bar1);
-
+                    Shrink(bar1);
                 }
-                if (BallXPosition < 10)
+                if (ball.Location.X < 10)
                 {
-                    t.Stop();
-                    Player2Points += 1;
-                    ShowPoints();
-                    StartBall();
+                    HandleScore("Player2");
                 }
-            }                  
+            }
         }
 
         void HandleHit(Panel bar)
+        {
+            int fifth = (int)(bar.Height + 15) / 5;
+            int ballPositionInBar = bar.Location.Y + bar.Height - ball.Location.Y -15;
+            
+            if (ballPositionInBar <= fifth || ballPositionInBar > fifth * 4)
+            {
+                BallYSpeed = 9;
+            }
+            if ((ballPositionInBar <= fifth * 2 && ballPositionInBar > fifth) || (ballPositionInBar <= fifth * 4 && ballPositionInBar > fifth * 3))
+            {
+                BallYSpeed = 6;
+            }
+            if (ballPositionInBar <= fifth * 3 && ballPositionInBar > fifth * 2)
+            {
+                BallYSpeed = 3;
+            } 
+        }
+
+        void Shrink(Panel bar)
         {
             hits += 1;
             if (bar.Height >= 20)
             {
                 bar.Height -= 10;
             }
+            bar.Refresh();
             HitCounterLabel.Text = hits.ToString();
         }
-        
+
+        void HandleScore(String player)
+        {
+            t.Stop();
+            if (player.Equals("Player1"))
+            {
+                Player1Points += 1;
+            }
+            else
+            {
+                Player2Points += 1;
+            }
+            ShowPoints();
+            StartGame();
+        }
+
 
         void ShowPoints()
         {
@@ -221,40 +237,36 @@ namespace PingPong
             if (e.KeyValue == 81)
             {
                 // Q key pressed
-                if (Bar1YPosition > 4)
+                if (bar1.Location.Y > 4)
                 {
-                    Bar1YPosition -= Bar1Speed;
-                    bar1.Location = new Point(50, Bar1YPosition);
+                    bar1.Location = new Point(50, bar1.Location.Y - Bar1Speed);
                 }
             }
 
             if (e.KeyValue == 65)
             {
                 // A key pressed
-                if (Bar1YPosition < 355 - bar1.Height)
+                if (bar1.Location.Y < 355 - bar1.Height)
                 {
-                    Bar1YPosition += Bar1Speed;
-                    bar1.Location = new Point(50, Bar1YPosition);
+                    bar1.Location = new Point(50, bar1.Location.Y + Bar1Speed);
                 }
             }
 
             if (e.KeyValue == 80)
             {
                 // P key pressed
-                if (Bar2YPosition > 4)
+                if (bar2.Location.Y > 4)
                 {
-                    Bar2YPosition -= Bar2Speed;
-                    bar2.Location = new Point(750, Bar2YPosition);
+                    bar2.Location = new Point(750, bar2.Location.Y - Bar2Speed);
                 }
             }
-            
+
             if (e.KeyValue == 76)
             {
                 // L key pressed
-                if (Bar2YPosition < 355 - bar2.Height)
+                if (bar2.Location.Y < 355 - bar2.Height)
                 {
-                    Bar2YPosition += Bar2Speed;
-                    bar2.Location = new Point(750, Bar2YPosition);
+                    bar2.Location = new Point(750, bar2.Location.Y + Bar2Speed);
                 }
             }
 
@@ -268,15 +280,16 @@ namespace PingPong
             if (e.KeyValue == 32)
             {
                 // SPACE key pressed
-                if(paused)
+                if (paused)
                 {
                     t.Start();
                     paused = false;
-                } else
+                }
+                else
                 {
                     t.Stop();
                     paused = true;
-                }              
+                }
             }
         }
     }
