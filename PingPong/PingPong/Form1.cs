@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PingPong
@@ -15,10 +9,21 @@ namespace PingPong
 
         public int Bar1YPosition;
         public int Bar2YPosition;
+        public int Bar1Speed;
+        public int Bar2Speed;
+        public int Bar1Height;
+        public int Bar2Height;
+
         public int BallXPosition;
         public int BallYPosition;
+        public int BallXSpeed;
+        public int BallYSpeed;
+
         public int Player1Points;
         public int Player2Points;
+
+        public int hits;
+
         Boolean fromLeftToRight;
         Boolean fromUpToDown;
         Boolean paused;
@@ -31,14 +36,28 @@ namespace PingPong
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Bar1YPosition = 100;
-            Bar2YPosition = 100;
+            SetPlay();
             ShowPoints();
             StartBall();
         }
 
+        private void SetPlay()
+        {
+            Bar1YPosition = 100;
+            Bar2YPosition = 100;
+            Bar1Height = 120;
+            Bar2Height = 120;
+            Bar1Speed = 4;
+            Bar2Speed = 4;
+            BallXSpeed = 4;
+            BallYSpeed = 4;
+    }
+
         private void StartBall()
         {
+            bar1.Height = Bar1Height;
+            bar2.Height = Bar2Height;
+            hits = 0;
             t = new Timer();
             t.Interval = 20;
             t.Tick += new EventHandler(MoveBall);
@@ -84,10 +103,10 @@ namespace PingPong
                 {
                     if (fromUpToDown)
                     {
-                        if (BallYPosition < 290)
+                        if (BallYPosition < 340)
                         {
-                            BallXPosition += 4;
-                            BallYPosition += 4;
+                            BallXPosition += BallXSpeed;
+                            BallYPosition += BallYSpeed;
                             ball.Location = new Point(BallXPosition, BallYPosition);
                         }
                         else
@@ -100,8 +119,8 @@ namespace PingPong
                     {
                         if (BallYPosition > 4)
                         {
-                            BallXPosition += 4;
-                            BallYPosition -= 4;
+                            BallXPosition += BallXSpeed;
+                            BallYPosition -= BallYSpeed;
                             ball.Location = new Point(BallXPosition, BallYPosition);
                         }
                         else
@@ -114,7 +133,7 @@ namespace PingPong
                 if(BallXPosition>730 && (Bar2YPosition + bar2.Height > BallYPosition && BallYPosition > (Bar2YPosition-15)))
                 {
                     fromLeftToRight = false;
-                    
+                    HandleHit(bar2);
                 }
 
                 if(BallXPosition>780)
@@ -133,10 +152,10 @@ namespace PingPong
                 {
                     if (fromUpToDown)
                     {
-                        if (BallYPosition < 290)
+                        if (BallYPosition < 340)
                         {
-                            BallXPosition -= 4;
-                            BallYPosition += 4;
+                            BallXPosition -= BallXSpeed;
+                            BallYPosition += BallYSpeed;
                             ball.Location = new Point(BallXPosition, BallYPosition);
                         }
                         else
@@ -148,8 +167,8 @@ namespace PingPong
                     {
                         if (BallYPosition > 4)
                         {
-                            BallXPosition -= 4;
-                            BallYPosition -= 4;
+                            BallXPosition -= BallXSpeed;
+                            BallYPosition -= BallYSpeed;
                             ball.Location = new Point(BallXPosition, BallYPosition);
                         }
                         else
@@ -161,7 +180,8 @@ namespace PingPong
                 if (BallXPosition <70 && (Bar1YPosition + bar1.Height> BallYPosition && BallYPosition > (Bar1YPosition -15)))
                 {
                     fromLeftToRight = true;
-                    
+                    HandleHit(bar1);
+
                 }
                 if (BallXPosition < 10)
                 {
@@ -173,10 +193,21 @@ namespace PingPong
             }                  
         }
 
+        void HandleHit(Panel bar)
+        {
+            hits += 1;
+            if (bar.Height >= 20)
+            {
+                bar.Height -= 10;
+            }
+            HitCounterLabel.Text = hits.ToString();
+        }
+        
+
         void ShowPoints()
         {
-            label1.Text = Player1Points.ToString();
-            label2.Text = Player2Points.ToString();
+            Player1PointCounterLabel.Text = Player1Points.ToString();
+            Player2PointCounterLabel.Text = Player2Points.ToString();
         }
 
         void StopBall()
@@ -192,7 +223,7 @@ namespace PingPong
                 // Q key pressed
                 if (Bar1YPosition > 4)
                 {
-                    Bar1YPosition -= 4;
+                    Bar1YPosition -= Bar1Speed;
                     bar1.Location = new Point(50, Bar1YPosition);
                 }
             }
@@ -200,9 +231,9 @@ namespace PingPong
             if (e.KeyValue == 65)
             {
                 // A key pressed
-                if (Bar1YPosition < 185)
+                if (Bar1YPosition < 355 - bar1.Height)
                 {
-                    Bar1YPosition += 4;
+                    Bar1YPosition += Bar1Speed;
                     bar1.Location = new Point(50, Bar1YPosition);
                 }
             }
@@ -212,7 +243,7 @@ namespace PingPong
                 // P key pressed
                 if (Bar2YPosition > 4)
                 {
-                    Bar2YPosition -= 4;
+                    Bar2YPosition -= Bar2Speed;
                     bar2.Location = new Point(750, Bar2YPosition);
                 }
             }
@@ -220,9 +251,9 @@ namespace PingPong
             if (e.KeyValue == 76)
             {
                 // L key pressed
-                if (Bar2YPosition < 185)
+                if (Bar2YPosition < 355 - bar2.Height)
                 {
-                    Bar2YPosition += 4;
+                    Bar2YPosition += Bar2Speed;
                     bar2.Location = new Point(750, Bar2YPosition);
                 }
             }
